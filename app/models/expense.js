@@ -44,9 +44,14 @@ const ExpenseSchema = new Schema({
     },
     receipts: [
       {
-        body: { type: String, default: '', maxlength: 1000 },
+        vendor: { type: String, default: '', maxlength: 300 },
+        itemsPurchased: { type: String, default: '', maxlength: 1000 },
+        totalCost: { type: Number, default: '0' },
+        event: { type: String, default: '', maxlength: 300 },
         user: { type: Schema.ObjectId, ref: 'User' },
-        createdAt: { type: Date, default: Date.now }
+        createdAt: { type: Date, default: Date.now },
+        purchasedDate: { type: Date, default: Date.now }
+        //body: { type: String, default: '', maxlength: 1000 },
       }
     ],
 });
