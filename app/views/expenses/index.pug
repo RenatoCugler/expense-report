@@ -4,10 +4,10 @@ block main
   h1= title
 
 block content
-  - if (articles.length)
-    each article, index in articles
+  - if (expenses.length)
+    each expense, index in expenses
       div(class=`py-4 ${index && 'border-top'}`)
-        include article
+        include expense
 
     - if (pages > 1)
       ul.pagination
@@ -23,5 +23,5 @@ block content
                 when 'NEXT_PAGE_LINK': | Next
                 when 'LAST_PAGE_LINK': | Last
   - else
-    h4.text-muted No articles.&nbsp;
-      a(href="/articles/new") create one
+    h4.text-muted No expenses.&nbsp;
+      a(href="/expenses/new") create expense

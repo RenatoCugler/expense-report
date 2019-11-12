@@ -1,0 +1,38 @@
+extends ../layouts/default
+
+block main
+  h1= title
+
+block content
+  - var action = '/expenses'
+  - action += expense.isNew? '' : '/' + expense.id
+
+  .row
+    .col-md-8
+      form(method="post", action=action, enctype="multipart/form-data", role="form")
+
+        input(type="hidden", name="_csrf", value=csrf_token)
+
+        - if (!expense.isNew)
+          input(type="hidden", name="_method", value="PUT")
+
+        .form-group
+          label(for='title') Title
+          input.form-control#title(type='text', name="title", value=expense.title, placeholder='Enter the title')
+
+        .form-group
+          label(for='desc') Body
+          textarea.form-control#desc(rows="5", name="body", placeholder='Enter the expense description')=expense.body
+
+        .form-group
+          label(for='tags') Tags
+          input.form-control#tags(type='text', name="tags", value=expense.tags, placeholder='Enter the tags')
+
+        
+        button.btn.btn-primary(type='submit') Save
+        | &nbsp;
+        a.btn.btn-link(href='/expenses', title="cancel") Cancel
+
+    .col-md-4
+      - if (!expense.isNew && expense.image && expense.image.files && expense.image.files.length)
+        img(src=expense.image.cdnUri + "/mini_" + expense.image.files[0])

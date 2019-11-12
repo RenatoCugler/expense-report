@@ -5,17 +5,22 @@
  */
 
 const users = require('../app/controllers/users');
-const articles = require('../app/controllers/articles');
+const expenses = require('../app/controllers/expenses');
 const comments = require('../app/controllers/comments');
+const receipts = require('../app/controllers/receipts');
 const tags = require('../app/controllers/tags');
 const auth = require('./middlewares/authorization');
+
+
 
 /**
  * Route middlewares
  */
 
-const articleAuth = [auth.requiresLogin, auth.article.hasAuthorization];
+const expenseAuth = [auth.requiresLogin, auth.expense.hasAuthorization];
 const commentAuth = [auth.requiresLogin, auth.comment.hasAuthorization];
+const receiptAuth = [auth.requiresLogin, auth.receipt.hasAuthorization];
+
 
 const fail = {
   failureRedirect: '/login'
@@ -74,27 +79,37 @@ module.exports = function(app, passport) {
 
   app.param('userId', users.load);
 
-  // article routes
-  app.param('id', articles.load);
-  app.get('/articles', articles.index);
-  app.get('/articles/new', auth.requiresLogin, articles.new);
-  app.post('/articles', auth.requiresLogin, articles.create);
-  app.get('/articles/:id', articles.show);
-  app.get('/articles/:id/edit', articleAuth, articles.edit);
-  app.put('/articles/:id', articleAuth, articles.update);
-  app.delete('/articles/:id', articleAuth, articles.destroy);
+  // expense routes
+  app.param('id', expenses.load);
+  app.get('/expenses', expenses.index);
+  app.get('/expenses/new', auth.requiresLogin, expenses.new);
+  app.post('/expenses', auth.requiresLogin, expenses.create);
+  app.get('/expenses/:id', expenses.show);
+  app.get('/expenses/:id/edit', expenseAuth, expenses.edit);
+  app.put('/expenses/:id', expenseAuth, expenses.update);
+  app.delete('/expenses/:id', expenseAuth, expenses.destroy);
 
   // home route
-  app.get('/', articles.index);
+  app.get('/', expenses.index);
 
   // comment routes
   app.param('commentId', comments.load);
-  app.post('/articles/:id/comments', auth.requiresLogin, comments.create);
-  app.get('/articles/:id/comments', auth.requiresLogin, comments.create);
+  app.post('/expenses/:id/comments', auth.requiresLogin, comments.create);
+  app.get('/expenses/:id/comments', auth.requiresLogin, comments.create);
   app.delete(
-    '/articles/:id/comments/:commentId',
+    '/expenses/:id/comments/:commentId',
     commentAuth,
     comments.destroy
+  );
+
+  // receipts routes
+  app.param('receiptId', receipts.load);
+  app.post('/expenses/:id/receipts', auth.requiresLogin, receipts.create);
+  app.get('/expenses/:id/receipts', auth.requiresLogin, receipts.create);
+  app.delete(
+    '/expenses/:id/receipts/:receiptId',
+    receiptAuth,
+    receipts.destroy
   );
 
   // tag routes

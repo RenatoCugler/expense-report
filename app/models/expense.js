@@ -17,10 +17,10 @@ const getTags = tags => tags.join(',');
 const setTags = tags => tags.split(',').slice(0, 10); // max tags
 
 /**
- * Article Schema
+ * Expense Schema
  */
 
-const ArticleSchema = new Schema({
+const ExpenseSchema = new Schema({
   title: { type: String, default: '', trim: true, maxlength: 400 },
   body: { type: String, default: '', trim: true, maxlength: 1000 },
   user: { type: Schema.ObjectId, ref: 'User' },
@@ -36,28 +36,40 @@ const ArticleSchema = new Schema({
     cdnUri: String,
     files: []
   },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    enum: ['draft', 'pending','approved','rejected'],
+    default: 'draft'
+    },
+    receipts: [
+      {
+        body: { type: String, default: '', maxlength: 1000 },
+        user: { type: Schema.ObjectId, ref: 'User' },
+        createdAt: { type: Date, default: Date.now }
+      }
+    ],
 });
 
 /**
  * Validations
  */
 
-ArticleSchema.path('title').required(true, 'Article title cannot be blank');
-ArticleSchema.path('body').required(true, 'Article body cannot be blank');
+ExpenseSchema.path('title').required(true, 'Expense title cannot be blank');
+ExpenseSchema.path('status').required(true, 'Status cannot be blank');
 
 /**
  * Pre-remove hook
  */
 
-ArticleSchema.pre('remove', function(next) {
+ExpenseSchema.pre('remove', function(next) {
   // const imager = new Imager(imagerConfig, 'S3');
   // const files = this.image.files;
 
   // if there are files associated with the item, remove from the cloud too
   // imager.remove(files, function (err) {
   //   if (err) return next(err);
-  // }, 'article');
+  // }, 'expense');
 
   next();
 });
@@ -66,33 +78,7 @@ ArticleSchema.pre('remove', function(next) {
  * Methods
  */
 
-ArticleSchema.methods = {
-  /**
-   * Save article and upload image
-   *
-   * @param {Object} images
-   * @api private
-   */
-
-  uploadAndSave: function(/*image*/) {
-    const err = this.validateSync();
-    if (err && err.toString()) throw new Error(err.toString());
-    return this.save();
-
-    /*
-    if (images && !images.length) return this.save();
-    const imager = new Imager(imagerConfig, 'S3');
-
-    imager.upload(images, function (err, cdnUri, files) {
-      if (err) return cb(err);
-      if (files.length) {
-        self.image = { cdnUri : cdnUri, files : files };
-      }
-      self.save(cb);
-    }, 'article');
-    */
-  },
-
+ExpenseSchema.methods = {
   /**
    * Add comment
    *
@@ -107,10 +93,11 @@ ArticleSchema.methods = {
       user: user._id
     });
 
+    //TODO - verify
     if (!this.user.email) this.user.email = 'email@product.com';
 
     notify.comment({
-      article: this,
+      expense: this,
       currentUser: user,
       comment: comment.body
     });
@@ -131,16 +118,58 @@ ArticleSchema.methods = {
     if (~index) this.comments.splice(index, 1);
     else throw new Error('Comment not found');
     return this.save();
+  },
+  
+  /**
+   * Add receipt
+   *
+   * @param {User} user
+   * @param {Object} receipt
+   * @api private
+   */
+  addReceipt: function(user, receipt) {
+    this.receipts.push({
+      body: receipt.body,
+      user: user._id
+    });
+
+    /*
+    //TODO - add notification
+    if (!this.user.email) this.user.email = 'email@product.com';
+
+    notify.receipt({
+      expense: this,
+      currentUser: user,
+      receipt: receipt.body
+    });
+    */
+
+    return this.save();
+  },
+
+  /**
+   * Remove receipt
+   *
+   * @param {receiptId} String
+   * @api private
+   */
+  removeReceipt: function(receiptId) {
+    const index = this.receipts.map(receipt => receipt.id).indexOf(receiptId);
+
+    if (~index) this.receipts.splice(index, 1);
+    else throw new Error('Receipt not found');
+    return this.save();
   }
+
 };
 
 /**
  * Statics
  */
 
-ArticleSchema.statics = {
+ExpenseSchema.statics = {
   /**
-   * Find article by id
+   * Find expense by id
    *
    * @param {ObjectId} id
    * @api private
@@ -154,7 +183,7 @@ ArticleSchema.statics = {
   },
 
   /**
-   * List articles
+   * List expenses
    *
    * @param {Object} options
    * @api private
@@ -173,4 +202,4 @@ ArticleSchema.statics = {
   }
 };
 
-mongoose.model('Article', ArticleSchema);
+mongoose.model('Expense', ExpenseSchema);

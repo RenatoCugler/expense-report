@@ -6,7 +6,7 @@
 
 # Nodejs Express Mongoose Demo
 
-This is a demo application illustrating various features used in everyday web development, with a fine touch of best practices. The demo app is a blog application where users can signup, create an article, delete an article and add comments etc.
+This is a demo application illustrating various features used in everyday web development, with a fine touch of best practices. The demo app is a blog application where users can signup, create an expense, delete an expense and add comments etc.
 
 Table of contents:
 

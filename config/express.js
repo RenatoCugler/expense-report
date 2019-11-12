@@ -42,6 +42,7 @@ module.exports = function(app, passport) {
     })
   );
 
+  //TODO - cors
   app.use(
     cors({
       origin: ['http://localhost:3000', 'https://reboil-demo.herokuapp.com'],

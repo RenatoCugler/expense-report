@@ -1,0 +1,11 @@
+- if (receipt && receipt.user)
+  - var name = receipt.user.name ? receipt.user.name : receipt.user.username
+    a(href="/users/"+receipt.user._id)= name
+    |  :&nbsp;
+    = receipt.body.slice(0, 1000)
+
+    form.form-inline(role="form", method="post", action="/expenses/" + expense._id + "/receipts/" + receipt._id, onsubmit="return confirm('Are you sure?')")
+      input(type='hidden', name='_csrf', value=csrf_token)
+      span.text-muted= formatDate(receipt.createdAt)
+      input(type="hidden", name="_method", value="DELETE")
+      button.btn.btn-link.text-danger(type="submit") delete

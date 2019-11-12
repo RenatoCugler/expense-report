@@ -1,0 +1,27 @@
+expense.expense
+  h3
+    a(href='/expenses/'+expense._id, title=expense.title) #{expense.title.slice(0, 140)}
+  p= expense.body.slice(0, 400)
+
+  .meta
+    span Status: &nbsp;
+    span= expense.status
+    | &nbsp; - &nbsp;
+    span Created at 
+    span.text-muted= formatDate(expense.createdAt)
+
+    - if (expense.user)
+      | &nbsp; - &nbsp;
+      span Created by &nbsp;
+
+      - var name = expense.user.name ? expense.user.name : expense.user.username
+
+      a(href="/users/"+expense.user._id)= name
+
+    - if (expense.tags)
+      | &nbsp; - &nbsp;
+      span Tags &nbsp;
+      each tag in expense.tags.split(',').slice(0, 10)
+        i.text-muted.fa.fa-tag &nbsp;
+        a.tag(href="/tags/"+tag)= tag
+        | &nbsp;&nbsp;

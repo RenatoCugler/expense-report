@@ -25,14 +25,14 @@ exports.user = {
 };
 
 /*
- *  Article authorization routing middleware
+ *  Expense authorization routing middleware
  */
 
-exports.article = {
+exports.expense = {
   hasAuthorization: function(req, res, next) {
-    if (req.article.user.id != req.user.id) {
+    if (req.expense.user.id != req.user.id) {
       req.flash('info', 'You are not authorized');
-      return res.redirect('/articles/' + req.article.id);
+      return res.redirect('/expenses/' + req.expense.id);
     }
     next();
   }
@@ -44,16 +44,36 @@ exports.article = {
 
 exports.comment = {
   hasAuthorization: function(req, res, next) {
-    // if the current user is comment owner or article owner
+    // if the current user is comment owner or expense owner
     // give them authority to delete
     if (
       req.user.id === req.comment.user.id ||
-      req.user.id === req.article.user.id
+      req.user.id === req.expense.user.id
     ) {
       next();
     } else {
       req.flash('info', 'You are not authorized');
-      res.redirect('/articles/' + req.article.id);
+      res.redirect('/expenses/' + req.expense.id);
+    }
+  }
+};
+
+/**
+ * Receipt authorization routing middleware
+ */
+
+exports.receipt = {
+  hasAuthorization: function(req, res, next) {
+    // if the current user is receipt owner or expense owner
+    // give them authority to delete
+    if (
+      req.user.id === req.receipt.user.id ||
+      req.user.id === req.expense.user.id
+    ) {
+      next();
+    } else {
+      req.flash('info', 'You are not authorized');
+      res.redirect('/expenses/' + req.expense.id);
     }
   }
 };

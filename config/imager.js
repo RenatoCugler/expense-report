@@ -4,7 +4,7 @@
 
 module.exports = {
   variants: {
-    article: {
+    expense: {
       resize: {
         detail: 'x440'
       },

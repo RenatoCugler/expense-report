@@ -1,0 +1,29 @@
+form(method="post", action=`/expenses/${expense._id}/receipts`, role="form")
+  input(type='hidden', name='_csrf', value=csrf_token)
+  
+  .form-group
+    label(for='purchasedDate') Date on receipt
+    input#email.form-control(type='date', placeholder='date' name='purchasedDate')
+
+  .form-group
+    label(for='vendor') Vendor
+    input#email.form-control(type='text', name='vendor' placeholder='i.e.: Walmart')
+
+  .form-group
+    label(for='description') Item(s) purchased
+    textarea.form-control(type='text', rows="2", name="description", placeholder='')
+
+  .form-group
+    label(for='cost') Cost
+    input#email.form-control(type='float', name='cost' placeholder='')
+
+
+  .form-group
+    label(for='email') Email:
+    input#email.form-control(type='email', placeholder='name@email.com' name='email')
+
+  .form-group
+    label(for='notes') Notes
+    textarea.form-control(type='text', rows="6", name="notes", placeholder='Notes or comments')
+
+  button.btn.btn-primary(type='submit') Add receipt

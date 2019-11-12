@@ -6,7 +6,7 @@
 
 const mongoose = require('mongoose');
 const { wrap: async } = require('co');
-const Article = mongoose.model('Article');
+const Expense = mongoose.model('Expense');
 
 /**
  * List items tagged with a tag
@@ -22,12 +22,12 @@ exports.index = async(function*(req, res) {
     criteria: criteria
   };
 
-  const articles = yield Article.list(options);
-  const count = yield Article.countDocuments(criteria);
+  const expenses = yield Expense.list(options);
+  const count = yield Expense.countDocuments(criteria);
 
-  res.render('articles/index', {
-    title: 'Articles tagged ' + req.params.tag,
-    articles: articles,
+  res.render('expenses/index', {
+    title: 'Expenses tagged ' + req.params.tag,
+    expenses: expenses,
     page: page + 1,
     pages: Math.ceil(count / limit)
   });
