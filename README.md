@@ -4,9 +4,12 @@
 [![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/madhums/node-express-mongoose-demo)
 [![Join Gitter Chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](https://gitter.im/madhums/node-express-mongoose-demo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# Nodejs Express Mongoose Demo
+# Expense report app
 
-This is a demo application illustrating various features used in everyday web development, with a fine touch of best practices. The demo app is a blog application where users can signup, create an expense, delete an expense and add comments etc.
+My goal is to build a simple expenses report web application where users can submit receipts for reimbursement with a basic workflow for approval. 
+
+
+# Review content.
 
 Table of contents:
 
