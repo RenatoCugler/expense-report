@@ -134,7 +134,11 @@ ExpenseSchema.methods = {
    */
   addReceipt: function(user, receipt) {
     this.receipts.push({
-      body: receipt.body,
+      //body: receipt.body,
+      vendor: receipt.vendor,
+      itemsPurchased: receipt.itemsPurchased,
+      totalCost: receipt.totalCost,
+      event: receipt.event,
       user: user._id
     });
 

@@ -7,7 +7,7 @@ form(method="post", action=`/expenses/${expense._id}/receipts`, role="form")
 
   .form-group
     label(for='vendor') Vendor
-    input#email.form-control(type='text', name='vendor' placeholder='Walmart')
+    input#email.form-control(type='text', name='vendor' placeholder='I.e: Walmart')
 
   .form-group
     label(for='itemsPurchased') Item(s) purchased
@@ -19,6 +19,9 @@ form(method="post", action=`/expenses/${expense._id}/receipts`, role="form")
   
   .form-group
     label(for='event') Event
-    input#email.form-control(type='text', name='event' placeholder='Pinewood Derby')
+    input#email.form-control(type='text', name='event' placeholder='I.e: Pinewood Derby')
+
+p. 
+New line
 
   button.btn.btn-primary(type='submit') Add receipt
