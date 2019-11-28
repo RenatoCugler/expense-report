@@ -4,6 +4,11 @@
  * Module dependencies.
  */
 
+ /**
+  * Interact with database
+  * communicates with controller
+  */
+
 const mongoose = require('mongoose');
 const notify = require('../mailer');
 
@@ -19,6 +24,18 @@ const setTags = tags => tags.split(',').slice(0, 10); // max tags
 /**
  * Expense Schema
  */
+
+const ReceiptSchema = new Schema({
+  vendor: { type: String, default: '', maxlength: 300 },
+  itemsPurchased: { type: String, default: '', maxlength: 1000 },
+  totalCost: { type: Number, default: '0' },
+  event: { type: String, default: '', maxlength: 300 },
+  user: { type: Schema.ObjectId, ref: 'User' },
+  createdAt: { type: Date, default: Date.now },
+  purchasedDate: { type: Date, default: Date.now } 
+});
+
+//TODO esta salvando novo recibo mas so o ID, os demais campos nào estao sendo salvos.
 
 const ExpenseSchema = new Schema({
   title: { type: String, default: '', trim: true, maxlength: 400 },
@@ -42,18 +59,7 @@ const ExpenseSchema = new Schema({
     enum: ['draft', 'pending','approved','rejected'],
     default: 'draft'
     },
-    receipts: [
-      {
-        vendor: { type: String, default: '', maxlength: 300 },
-        itemsPurchased: { type: String, default: '', maxlength: 1000 },
-        totalCost: { type: Number, default: '0' },
-        event: { type: String, default: '', maxlength: 300 },
-        user: { type: Schema.ObjectId, ref: 'User' },
-        createdAt: { type: Date, default: Date.now },
-        purchasedDate: { type: Date, default: Date.now }
-        //body: { type: String, default: '', maxlength: 1000 },
-      }
-    ],
+  receipts: [ { ReceiptSchema } ]
 });
 
 /**
@@ -99,13 +105,13 @@ ExpenseSchema.methods = {
     });
 
     //TODO - verify
-    if (!this.user.email) this.user.email = 'email@product.com';
+    if (!this.user.email) this.user.email = 'renatocugler@gmail.com';
 
-    notify.comment({
-      expense: this,
-      currentUser: user,
-      comment: comment.body
-    });
+//    notify.comment({
+//      expense: this,
+//      currentUser: user,
+//      comment: comment.body
+//    });
 
     return this.save();
   },
@@ -124,8 +130,7 @@ ExpenseSchema.methods = {
     else throw new Error('Comment not found');
     return this.save();
   },
-  
-  /**
+   /**
    * Add receipt
    *
    * @param {User} user
@@ -133,13 +138,19 @@ ExpenseSchema.methods = {
    * @api private
    */
   addReceipt: function(user, receipt) {
+
+    console.log("add receipt");
+    console.log(receipt);
+
     this.receipts.push({
-      //body: receipt.body,
       vendor: receipt.vendor,
       itemsPurchased: receipt.itemsPurchased,
       totalCost: receipt.totalCost,
       event: receipt.event,
-      user: user._id
+      user: user._id,
+      createdAt: receipt.createdAt,
+      purchasedDate: receipt.purchasedDate,
+      _id:receipt._id
     });
 
     /*
@@ -169,7 +180,6 @@ ExpenseSchema.methods = {
     else throw new Error('Receipt not found');
     return this.save();
   }
-
 };
 
 /**
@@ -209,6 +219,16 @@ ExpenseSchema.statics = {
       .skip(limit * page)
       .exec();
   }
+};
+
+/**
+ * Receipt Methods
+ */
+
+ReceiptSchema.methods = {
+
+ 
+
 };
 
 mongoose.model('Expense', ExpenseSchema);

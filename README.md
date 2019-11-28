@@ -8,27 +8,19 @@
 
 My goal is to build a simple expenses report web application where users can submit receipts for reimbursement with a basic workflow for approval. 
 
-
-# Review content.
-
 Table of contents:
 
 <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [Boilerplate](#boilerplate)
-- [Install](#install)
-- [Tests](#tests)
-- [Docker](#docker)
-- [License](#license)
+- [Expense report app](#expense-report-app)
+  - [Install](#install)
+  - [Tests](#tests)
+  - [Docker](#docker)
+  - [License](#license)
 
 <!-- /TOC -->
 
-## Boilerplate
 
-Want to build something from scratch? use the [boilerplate](https://github.com/madhums/node-express-mongoose)
-
-* Checkout the [apps that are built using this approach](https://github.com/madhums/node-express-mongoose/wiki/Apps-built-using-this-approach)
-* The [wiki](https://github.com/madhums/node-express-mongoose/wiki) is wip, it has some information about the way application is setup.
 
 ## Install
 

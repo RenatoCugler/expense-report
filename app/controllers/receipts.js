@@ -2,6 +2,8 @@
 
 /**
  * Module dependencies.
+ * ask model for data and load view
+ * 
  */
 
 const { wrap: async } = require('co');
@@ -17,12 +19,27 @@ exports.load = function(req, res, next, id) {
   next();
 };
 
+
+/**
+ * New receipt
+ */
+
+exports.new = function(req, res) {
+  res.render('receipts/new', {
+    title: 'New Receipt',
+    receipt: new Receipt()
+  });
+};
+
+
 /**
  * Create receipt
  */
 
 exports.create = async(function*(req, res) {
   const expense = req.expense;
+  console.log("controller");
+  console.log(expense);
   yield expense.addReceipt(req.user, req.body);
   res.redirect(`/expenses/${expense._id}`);
 });
