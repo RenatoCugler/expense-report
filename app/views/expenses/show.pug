@@ -22,10 +22,6 @@ block content
   
         p.text-muted= formatDate(expense.createdAt, "%b %d, %Y at %I:%M %p")
 
-    .col-md-4
-      - if (!expense.isNew && expense.image && expense.image.files && expense.image.files.length)
-        img(src=expense.image.cdnUri + '/mini_' + expense.image.files[0])
-
   form(action="/expenses/"+expense.id, method="post", onsubmit="return confirm('Are you sure?')")
     input(type='hidden', name='_csrf', value=csrf_token)
     a.btn.btn-outline-primary(href='/expenses/'+expense._id+'/edit', title="edit") Edit
@@ -34,15 +30,24 @@ block content
     button.btn.btn-link.text-danger(type="submit") Delete
 
   br
-  h3 Comments
-  each comment, index in expense.comments
-    div(class=`py-3 ${index && 'border-top'}`)
-      include ../comments/comment
-  include ../comments/form
-
-  br
   h3 Receipts
+  a.btn.btn-outline-primary(href='/expenses/'+expense._id+'/receipts/add', title="new") Add receipt
+
   each receipt, index in expense.receipts
     div(class=`py-3 ${index && 'border-top'}`)
+      span Receipt # #{index+1}
+      br
       include ../receipts/receipt
-  include ../receipts/form
+
+  br
+  br
+  .row
+    .col-md-4
+      h3 Comments
+      if expense.comments.length == 0 
+        span No comments
+      each comment, index in expense.comments
+        div(class=`py-3 ${index && 'border-top'}`)
+          include ../comments/comment
+    .col-md-4
+      include ../comments/form

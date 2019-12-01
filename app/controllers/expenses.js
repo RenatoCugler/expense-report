@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const { wrap: async } = require('co');
 const only = require('only');
 const Expense = mongoose.model('Expense');
+const Receipt = mongoose.model('Receipt');
 const assign = Object.assign;
 
 /**
@@ -18,6 +19,9 @@ exports.load = async(function*(req, res, next, id) {
   try {
     req.expense = yield Expense.load(id);
     if (!req.expense) return next(new Error('Expense not found'));
+
+    req.expense.receipts = yield Receipt.find().where('expense').equals(req.expense.id);
+
   } catch (err) {
     return next(err);
   }

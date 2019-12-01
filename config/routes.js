@@ -105,8 +105,10 @@ module.exports = function(app, passport) {
   // receipts routes
   app.param('receiptId', receipts.load);
   app.post('/expenses/:id/receipts', auth.requiresLogin, receipts.create);
-  app.get('/expenses/:id/receipts', auth.requiresLogin, receipts.create);
-  app.delete('/expenses/:id/receipts/:receiptId', receiptAuth, receipts.destroy);
+  app.get('/expenses/:id/receipts/add', auth.requiresLogin, receipts.new);
+  app.post('/expenses/:id/receipts/add', auth.requiresLogin, receipts.create);
+  //app.get('/expenses/:id/receipts', auth.requiresLogin, receipts.create);
+  //app.delete('/expenses/:id/receipts/:receiptId', receiptAuth, receipts.destroy);
 
   
   // tag routes

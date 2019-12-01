@@ -25,18 +25,6 @@ const setTags = tags => tags.split(',').slice(0, 10); // max tags
  * Expense Schema
  */
 
-const ReceiptSchema = new Schema({
-  vendor: { type: String, default: '', maxlength: 300 },
-  itemsPurchased: { type: String, default: '', maxlength: 1000 },
-  totalCost: { type: Number, default: '0' },
-  event: { type: String, default: '', maxlength: 300 },
-  user: { type: Schema.ObjectId, ref: 'User' },
-  createdAt: { type: Date, default: Date.now },
-  purchasedDate: { type: Date, default: Date.now } 
-});
-
-//TODO esta salvando novo recibo mas so o ID, os demais campos nào estao sendo salvos.
-
 const ExpenseSchema = new Schema({
   title: { type: String, default: '', trim: true, maxlength: 400 },
   body: { type: String, default: '', trim: true, maxlength: 1000 },
@@ -59,13 +47,12 @@ const ExpenseSchema = new Schema({
     enum: ['draft', 'pending','approved','rejected'],
     default: 'draft'
     },
-  receipts: [ { ReceiptSchema } ]
+  receipts: [{ type: Schema.ObjectId, ref: 'Receipt' }]
 });
 
 /**
  * Validations
  */
-
 ExpenseSchema.path('title').required(true, 'Expense title cannot be blank');
 ExpenseSchema.path('status').required(true, 'Status cannot be blank');
 
@@ -76,7 +63,6 @@ ExpenseSchema.path('status').required(true, 'Status cannot be blank');
 ExpenseSchema.pre('remove', function(next) {
   // const imager = new Imager(imagerConfig, 'S3');
   // const files = this.image.files;
-
   // if there are files associated with the item, remove from the cloud too
   // imager.remove(files, function (err) {
   //   if (err) return next(err);
@@ -103,16 +89,6 @@ ExpenseSchema.methods = {
       body: comment.body,
       user: user._id
     });
-
-    //TODO - verify
-    if (!this.user.email) this.user.email = 'renatocugler@gmail.com';
-
-//    notify.comment({
-//      expense: this,
-//      currentUser: user,
-//      comment: comment.body
-//    });
-
     return this.save();
   },
 
@@ -125,61 +101,10 @@ ExpenseSchema.methods = {
 
   removeComment: function(commentId) {
     const index = this.comments.map(comment => comment.id).indexOf(commentId);
-
     if (~index) this.comments.splice(index, 1);
     else throw new Error('Comment not found');
     return this.save();
   },
-   /**
-   * Add receipt
-   *
-   * @param {User} user
-   * @param {Object} receipt
-   * @api private
-   */
-  addReceipt: function(user, receipt) {
-
-    console.log("add receipt");
-    console.log(receipt);
-
-    this.receipts.push({
-      vendor: receipt.vendor,
-      itemsPurchased: receipt.itemsPurchased,
-      totalCost: receipt.totalCost,
-      event: receipt.event,
-      user: user._id,
-      createdAt: receipt.createdAt,
-      purchasedDate: receipt.purchasedDate,
-      _id:receipt._id
-    });
-
-    /*
-    //TODO - add notification
-    if (!this.user.email) this.user.email = 'email@product.com';
-
-    notify.receipt({
-      expense: this,
-      currentUser: user,
-      receipt: receipt.body
-    });
-    */
-
-    return this.save();
-  },
-
-  /**
-   * Remove receipt
-   *
-   * @param {receiptId} String
-   * @api private
-   */
-  removeReceipt: function(receiptId) {
-    const index = this.receipts.map(receipt => receipt.id).indexOf(receiptId);
-
-    if (~index) this.receipts.splice(index, 1);
-    else throw new Error('Receipt not found');
-    return this.save();
-  }
 };
 
 /**
@@ -198,6 +123,7 @@ ExpenseSchema.statics = {
     return this.findOne({ _id })
       .populate('user', 'name email username')
       .populate('comments.user')
+      .populate('receipts')
       .exec();
   },
 
@@ -219,16 +145,6 @@ ExpenseSchema.statics = {
       .skip(limit * page)
       .exec();
   }
-};
-
-/**
- * Receipt Methods
- */
-
-ReceiptSchema.methods = {
-
- 
-
 };
 
 mongoose.model('Expense', ExpenseSchema);

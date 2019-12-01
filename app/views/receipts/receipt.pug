@@ -1,8 +1,5 @@
-- if (receipt && receipt.user)
-  - var name = receipt.user.name ? receipt.user.name : receipt.user.username
-    a(href="/users/"+receipt.user._id)= name
-    |  :&nbsp;
-    = receipt.itemsPurchased.slice(0, 1000)
+- var items = receipt.itemsPurchased.slice(0, 1000)
+span= items
 
     form.form-inline(role="form", method="post", action="/expenses/" + expense._id + "/receipts/" + receipt._id, onsubmit="return confirm('Are you sure?')")
       input(type='hidden', name='_csrf', value=csrf_token)
